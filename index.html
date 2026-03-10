@@ -2,36 +2,37 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Voxel Realms | WebGL World</title>
+  <title>VOXEL·31 | Neon Voxel Observatory</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root {
       --bg: #020617;
-      --bg-alt: #020b22;
+      --bg-alt: #000014;
       --accent: #22d3ee;
-      --accent-soft: rgba(34, 211, 238, 0.2);
+      --accent2: #a855f7;
+      --accent3: #f97316;
+      --accent-soft: rgba(34, 211, 238, 0.24);
       --accent-strong: #38bdf8;
       --text: #e5e7eb;
       --muted: #9ca3af;
-      --card: rgba(15, 23, 42, 0.85);
-      --border: rgba(148, 163, 184, 0.35);
-      --danger: #f97373;
+      --card: rgba(15, 23, 42, 0.92);
+      --border: rgba(148, 163, 184, 0.4);
     }
 
     * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
     }
 
     html, body {
       height: 100%;
+      background: radial-gradient(circle at top, #020617 0, #000 55%, #020617 100%);
+      color: var(--text);
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
         "Segoe UI", sans-serif;
-      background: radial-gradient(circle at top, #0f172a 0, #020617 40%, #000 100%);
-      color: var(--text);
-      overflow-x: hidden;
       scroll-behavior: smooth;
+      overflow-x: hidden;
     }
 
     body {
@@ -39,59 +40,99 @@
       flex-direction: column;
     }
 
-    /* Animated background grid */
-    .background-grid {
+    /* BACKGROUND FX */
+
+    .bg-grid {
       position: fixed;
       inset: 0;
       background-image:
-        linear-gradient(rgba(148, 163, 184, 0.08) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(148, 163, 184, 0.08) 1px, transparent 1px);
-      background-size: 40px 40px;
-      opacity: 0.35;
+        linear-gradient(rgba(30, 64, 175, 0.18) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(30, 64, 175, 0.18) 1px, transparent 1px);
+      background-size: 48px 48px;
+      opacity: 0.55;
       transform: translateZ(0);
-      animation: gridPan 30s linear infinite;
+      animation: gridDrift 40s linear infinite;
       pointer-events: none;
-      z-index: -2;
+      z-index: -4;
     }
 
-    @keyframes gridPan {
+    @keyframes gridDrift {
       from { transform: translate3d(0, 0, 0); }
-      to   { transform: translate3d(-80px, -80px, 0); }
+      to   { transform: translate3d(-96px, -96px, 0); }
     }
 
-    /* Neon blur orbs */
-    .orb {
+    .bg-scanline {
       position: fixed;
-      width: 420px;
-      height: 420px;
-      border-radius: 999px;
-      filter: blur(110px);
-      opacity: 0.35;
+      inset: 0;
+      background-image: linear-gradient(
+        to bottom,
+        rgba(15, 23, 42, 0.0) 0,
+        rgba(15, 23, 42, 0.6) 50%,
+        rgba(15, 23, 42, 0.0) 100%
+      );
+      mix-blend-mode: soft-light;
       pointer-events: none;
+      opacity: 0.65;
       z-index: -3;
     }
-    .orb.a { background: #22d3ee; top: -80px; left: -40px; }
-    .orb.b { background: #6366f1; bottom: -120px; right: -60px; }
-    .orb.c { background: #f97316; top: 40%; right: 20%; }
+
+    .glow-orb {
+      position: fixed;
+      width: 520px;
+      height: 520px;
+      border-radius: 999px;
+      filter: blur(120px);
+      opacity: 0.45;
+      pointer-events: none;
+      z-index: -5;
+    }
+    .glow-orb.a { background: #22d3ee; top: -120px; left: -40px; }
+    .glow-orb.b { background: #a855f7; bottom: -140px; right: -80px; }
+    .glow-orb.c { background: #f97316; top: 40%; right: 20%; }
+
+    /* STARFIELD */
+    .starfield {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -2;
+      opacity: 0.75;
+    }
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      border-radius: 999px;
+      background: rgba(248, 250, 252, 0.8);
+      box-shadow: 0 0 8px rgba(248, 250, 252, 0.6);
+      animation: twinkle 4s ease-in-out infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(0.8); }
+      50%      { opacity: 1; transform: scale(1); }
+    }
+
+    /* HEADER / NAV */
 
     header {
       position: sticky;
       top: 0;
-      z-index: 10;
+      z-index: 20;
       backdrop-filter: blur(18px);
       background: linear-gradient(
         to bottom,
-        rgba(15, 23, 42, 0.9),
-        rgba(15, 23, 42, 0.6),
+        rgba(15, 23, 42, 0.96),
+        rgba(15, 23, 42, 0.7),
         transparent
       );
-      border-bottom: 1px solid rgba(148, 163, 184, 0.35);
+      border-bottom: 1px solid rgba(148, 163, 184, 0.4);
     }
 
     .nav {
-      max-width: 1100px;
+      max-width: 1160px;
       margin: 0 auto;
-      padding: 14px 20px;
+      padding: 12px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -101,42 +142,59 @@
     .nav-left {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
+    }
+
+    .logo-orbit {
+      position: relative;
+      width: 28px;
+      height: 28px;
+      perspective: 400px;
     }
 
     .logo-cube {
-      width: 26px;
-      height: 26px;
-      position: relative;
-      transform: rotate3d(1, 1, 0, 28deg);
+      position: absolute;
+      inset: 0;
       transform-style: preserve-3d;
-      animation: cubeSpin 9s linear infinite;
+      animation: cubeSpin 8s linear infinite;
     }
+
     .logo-face {
       position: absolute;
       inset: 0;
-      background: linear-gradient(135deg, var(--accent), var(--accent-strong));
-      opacity: 0.95;
-      border-radius: 4px;
-      box-shadow: 0 0 20px rgba(34, 211, 238, 0.7);
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 6px;
+      box-shadow: 0 0 18px rgba(56, 189, 248, 0.7);
     }
-    .logo-face.front { transform: translateZ(13px); }
-    .logo-face.back  { transform: translateZ(-13px) rotateY(180deg); }
-    .logo-face.left  { transform: rotateY(-90deg) translateZ(13px); }
-    .logo-face.right { transform: rotateY(90deg) translateZ(13px); }
-    .logo-face.top   { transform: rotateX(90deg) translateZ(13px); }
-    .logo-face.bottom{ transform: rotateX(-90deg) translateZ(13px); }
+
+    .logo-face.front  { transform: translateZ(14px); }
+    .logo-face.back   { transform: translateZ(-14px) rotateY(180deg); }
+    .logo-face.left   { transform: rotateY(-90deg) translateZ(14px); }
+    .logo-face.right  { transform: rotateY(90deg) translateZ(14px); }
+    .logo-face.top    { transform: rotateX(90deg) translateZ(14px); }
+    .logo-face.bottom { transform: rotateX(-90deg) translateZ(14px); }
+
+    .logo-ring {
+      position: absolute;
+      inset: -8px;
+      border-radius: 999px;
+      border: 1px dashed rgba(148, 163, 184, 0.5);
+      animation: ringSpin 14s linear infinite;
+    }
 
     @keyframes cubeSpin {
       from { transform: rotate3d(1, 1, 0, 0deg); }
       to   { transform: rotate3d(1, 1, 0, 360deg); }
     }
+    @keyframes ringSpin {
+      from { transform: rotateZ(0deg); }
+      to   { transform: rotateZ(360deg); }
+    }
 
     .brand {
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
       font-size: 12px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
       color: var(--muted);
     }
     .brand span {
@@ -146,16 +204,15 @@
     .nav-links {
       display: flex;
       gap: 18px;
-      font-size: 14px;
+      font-size: 13px;
     }
 
     .nav-links a {
+      position: relative;
       color: var(--muted);
       text-decoration: none;
-      position: relative;
       padding-bottom: 4px;
     }
-
     .nav-links a::after {
       content: "";
       position: absolute;
@@ -164,10 +221,9 @@
       width: 0;
       height: 2px;
       border-radius: 999px;
-      background: linear-gradient(90deg, var(--accent), #6366f1);
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
       transition: width 0.18s ease-out;
     }
-
     .nav-links a:hover {
       color: var(--text);
     }
@@ -177,13 +233,13 @@
 
     .nav-cta {
       display: flex;
-      gap: 10px;
       align-items: center;
+      gap: 10px;
     }
 
     .btn {
       border: 1px solid var(--border);
-      background: rgba(15, 23, 42, 0.7);
+      background: rgba(15, 23, 42, 0.9);
       color: var(--text);
       font-size: 13px;
       padding: 8px 14px;
@@ -193,38 +249,44 @@
       gap: 6px;
       cursor: pointer;
       text-decoration: none;
-      transition: border-color 0.16s ease-out, background 0.16s ease-out, transform 0.08s ease-out, box-shadow 0.16s ease-out;
+      transition:
+        border-color 0.16s ease-out,
+        background 0.16s ease-out,
+        transform 0.08s ease-out,
+        box-shadow 0.16s ease-out;
     }
 
     .btn-primary {
       border-color: var(--accent-strong);
       background: linear-gradient(135deg, #22d3ee, #0ea5e9);
-      color: #0f172a;
-      box-shadow: 0 14px 35px rgba(34, 211, 238, 0.3);
+      color: #020617;
+      box-shadow: 0 16px 40px rgba(34, 211, 238, 0.45);
     }
 
     .btn:hover {
       transform: translateY(-1px);
-      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.6);
       border-color: var(--accent-strong);
-      background: radial-gradient(circle at top left, var(--accent-soft), rgba(15, 23, 42, 0.9));
+      background: radial-gradient(circle at top left, var(--accent-soft), rgba(15, 23, 42, 0.96));
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.9);
     }
 
     .btn-primary:hover {
       background: linear-gradient(135deg, #38bdf8, #22d3ee);
-      box-shadow: 0 18px 40px rgba(56, 189, 248, 0.4);
+      box-shadow: 0 22px 50px rgba(56, 189, 248, 0.6);
     }
 
     main {
       flex: 1;
     }
 
+    /* HERO + GAME */
+
     .hero {
-      max-width: 1100px;
+      max-width: 1160px;
       margin: 40px auto 26px;
       padding: 0 20px;
       display: grid;
-      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr);
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.2fr);
       gap: 32px;
       align-items: center;
     }
@@ -232,34 +294,35 @@
     .eyebrow {
       display: inline-flex;
       align-items: center;
+      gap: 8px;
       padding: 4px 10px;
       border-radius: 999px;
-      background: rgba(15, 23, 42, 0.8);
       border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.86);
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.16em;
       color: var(--muted);
       margin-bottom: 16px;
-      gap: 8px;
     }
-    .eyebrow-badge {
-      width: 8px;
-      height: 8px;
+
+    .eyebrow-dot {
+      width: 9px;
+      height: 9px;
       border-radius: 999px;
       background: radial-gradient(circle at center, #22c55e, #15803d);
-      box-shadow: 0 0 12px rgba(34, 197, 94, 0.9);
+      box-shadow: 0 0 16px rgba(34, 197, 94, 0.9);
     }
 
     h1 {
-      font-size: clamp(2.4rem, 4vw, 3.4rem);
-      line-height: 1.05;
-      letter-spacing: -0.04em;
+      font-size: clamp(2.4rem, 4vw, 3.5rem);
+      line-height: 1.02;
+      letter-spacing: -0.05em;
       margin-bottom: 14px;
     }
 
     .gradient-text {
-      background: linear-gradient(120deg, #22d3ee, #a855f7, #f97316);
+      background: linear-gradient(120deg, var(--accent), var(--accent2), var(--accent3));
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
@@ -268,9 +331,9 @@
     .hero p {
       color: var(--muted);
       font-size: 15px;
-      line-height: 1.6;
+      line-height: 1.65;
       max-width: 32rem;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
 
     .hero-actions {
@@ -286,26 +349,38 @@
       gap: 16px;
       font-size: 12px;
       color: var(--muted);
+      align-items: center;
     }
 
-    .meta-dot {
+    .hero-meta-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      background: rgba(15, 23, 42, 0.88);
+    }
+
+    .chip-dot {
       width: 6px;
       height: 6px;
       border-radius: 999px;
       background: var(--accent-strong);
-      box-shadow: 0 0 10px rgba(56, 189, 248, 0.9);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.8);
     }
 
-    /* Game card */
     .game-shell {
       position: relative;
-      border-radius: 18px;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.18), rgba(15, 23, 42, 0.96));
+      border-radius: 22px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background:
+        radial-gradient(circle at top left, rgba(56, 189, 248, 0.35), transparent 60%),
+        radial-gradient(circle at bottom right, rgba(168, 85, 247, 0.35), rgba(15, 23, 42, 0.98));
       overflow: hidden;
       box-shadow:
-        0 20px 60px rgba(15, 23, 42, 0.9),
-        0 0 0 1px rgba(15, 23, 42, 0.9);
+        0 24px 80px rgba(15, 23, 42, 0.95),
+        0 0 0 1px rgba(15, 23, 42, 0.95);
     }
 
     .game-shell-header {
@@ -313,45 +388,46 @@
       align-items: center;
       justify-content: space-between;
       padding: 10px 14px;
-      background: linear-gradient(to right, rgba(15, 23, 42, 0.92), rgba(15, 23, 42, 0.8));
-      border-bottom: 1px solid rgba(148, 163, 184, 0.35);
+      background: linear-gradient(90deg, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.9));
+      border-bottom: 1px solid rgba(148, 163, 184, 0.5);
     }
 
     .window-dots {
       display: flex;
-      gap: 6px;
       align-items: center;
+      gap: 6px;
     }
+
     .window-dot {
       width: 9px;
       height: 9px;
       border-radius: 999px;
       background: #4b5563;
     }
-    .window-dot.red { background: #f97373; }
+    .window-dot.red   { background: #f97373; }
     .window-dot.amber { background: #fbbf24; }
     .window-dot.green { background: #22c55e; }
 
     .window-title {
-      color: var(--muted);
       font-size: 12px;
+      color: var(--muted);
       letter-spacing: 0.08em;
       text-transform: uppercase;
     }
 
-    .fps-indicator {
+    .session-pill {
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(22, 163, 74, 0.7);
+      background: rgba(22, 163, 74, 0.16);
       font-size: 11px;
       color: #bbf7d0;
-      background: rgba(22, 163, 74, 0.16);
-      border-radius: 999px;
-      padding: 3px 8px;
-      border: 1px solid rgba(22, 163, 74, 0.6);
     }
 
-    .fps-dot {
+    .session-dot {
       width: 6px;
       height: 6px;
       border-radius: 999px;
@@ -361,38 +437,82 @@
 
     .game-shell-body {
       position: relative;
-      background: radial-gradient(circle at top, rgba(15, 118, 110, 0.4), rgba(15, 23, 42, 0.95));
-    }
-
-    .game-placeholder-overlay {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      pointer-events: none;
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.2em;
-      color: rgba(226, 232, 240, 0.4);
+      background: radial-gradient(circle at top, rgba(15, 118, 110, 0.5), rgba(15, 23, 42, 0.96));
     }
 
     iframe#voxelFrame {
       width: 100%;
-      height: clamp(360px, 56vh, 520px);
+      height: clamp(360px, 58vh, 560px);
       border: none;
       display: block;
       background: #020617;
     }
 
-    /* Status bar */
-    .status-bar {
-      max-width: 1100px;
-      margin: 0 auto 28px;
+    .hud-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      mix-blend-mode: screen;
+      opacity: 0.65;
+    }
+
+    .hud-line {
+      position: absolute;
+      left: 10%;
+      right: 10%;
+      top: 50%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.7), transparent);
+      opacity: 0.6;
+    }
+
+    .hud-circle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 48px;
+      height: 48px;
+      border-radius: 999px;
+      border: 1px solid rgba(56, 189, 248, 0.85);
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.7);
+      opacity: 0.35;
+    }
+
+    .hud-text {
+      position: absolute;
+      bottom: 12px;
+      left: 14px;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(226, 232, 240, 0.6);
+    }
+
+    .game-hint {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      pointer-events: none;
+      padding-bottom: 12px;
+      font-size: 11px;
+      color: rgba(226, 232, 240, 0.85);
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      text-align: center;
+    }
+
+    /* STATUS STRIP */
+
+    .status-strip {
+      max-width: 1160px;
+      margin: 0 auto 26px;
       padding: 0 20px;
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 10px;
       font-size: 12px;
       color: var(--muted);
     }
@@ -404,7 +524,7 @@
       padding: 6px 10px;
       border-radius: 999px;
       border: 1px solid rgba(148, 163, 184, 0.4);
-      background: rgba(15, 23, 42, 0.88);
+      background: rgba(15, 23, 42, 0.9);
     }
 
     .status-pill strong {
@@ -412,118 +532,153 @@
       color: var(--text);
     }
 
-    .dot {
+    .status-dot {
       width: 7px;
       height: 7px;
       border-radius: 999px;
       background: var(--accent-strong);
     }
 
-    /* Info section */
-    .info {
-      max-width: 1100px;
+    /* PANELS */
+
+    .panels {
+      max-width: 1160px;
       margin: 0 auto 40px;
-      padding: 0 20px 10px;
+      padding: 0 20px 16px;
       display: grid;
-      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      grid-template-columns: minmax(0, 1.5fr) minmax(0, 1.2fr);
       gap: 22px;
     }
 
-    .card {
-      border-radius: 18px;
+    .panel {
+      position: relative;
+      border-radius: 20px;
       border: 1px solid var(--border);
       background: var(--card);
-      padding: 16px 18px;
-      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.95);
-      position: relative;
+      padding: 18px 18px 16px;
+      box-shadow: 0 22px 60px rgba(15, 23, 42, 0.98);
       overflow: hidden;
     }
 
-    .card::before {
+    .panel::before {
       content: "";
       position: absolute;
-      inset: -60%;
-      background: radial-gradient(circle at top, rgba(56, 189, 248, 0.12), transparent 60%);
-      opacity: 0.9;
+      inset: -40%;
+      background: radial-gradient(circle at top, rgba(56, 189, 248, 0.18), transparent 65%);
+      opacity: 0.85;
       pointer-events: none;
     }
 
-    .card h2 {
-      font-size: 15px;
-      margin-bottom: 6px;
-      letter-spacing: 0.08em;
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .panel-kicker {
       text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 11px;
       color: var(--muted);
     }
 
-    .card h3 {
-      font-size: 18px;
-      margin-bottom: 10px;
+    .panel-title {
+      font-size: 17px;
+      margin-top: 2px;
     }
 
-    .card p {
+    .panel-tag {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--muted);
+    }
+
+    .panel p {
+      position: relative;
+      z-index: 1;
       font-size: 13px;
       color: var(--muted);
       margin-bottom: 10px;
-      line-height: 1.5;
+      line-height: 1.6;
     }
 
-    .card ul {
+    .panel ul {
+      position: relative;
+      z-index: 1;
       list-style: none;
       font-size: 13px;
       color: var(--muted);
+      columns: 2;
+      column-gap: 18px;
     }
 
-    .card li {
+    .panel li {
+      break-inside: avoid;
       margin-bottom: 6px;
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
-    .card li::before {
+    .panel li::before {
       content: "◆";
       font-size: 8px;
       color: var(--accent-strong);
     }
 
-    .keybind-grid {
+    /* CONTROL GRID */
+
+    #controls {
+      scroll-margin-top: 70px;
+    }
+
+    .key-grid {
+      position: relative;
+      z-index: 1;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(138px, 1fr));
       gap: 8px;
       margin-top: 10px;
     }
 
     .keybind {
       border-radius: 12px;
-      border: 1px solid rgba(148, 163, 184, 0.4);
+      border: 1px solid rgba(148, 163, 184, 0.5);
       padding: 8px 10px;
       font-size: 12px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 8px;
-      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.12), rgba(15, 23, 42, 0.95));
+      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.14), rgba(15, 23, 42, 0.98));
     }
 
     .keybind span:first-child {
-      font-family: "SF Mono", ui-monospace, Menlo, Monaco, Consolas, monospace;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       color: var(--text);
     }
 
+    /* FOOTER */
+
     footer {
-      border-top: 1px solid rgba(148, 163, 184, 0.35);
+      border-top: 1px solid rgba(148, 163, 184, 0.55);
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.96), #020617);
       margin-top: auto;
-      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.9), #020617);
     }
 
     .footer-inner {
-      max-width: 1100px;
+      max-width: 1160px;
       margin: 0 auto;
       padding: 12px 20px 18px;
       display: flex;
-      flex-wrap: wrap;
       justify-content: space-between;
+      flex-wrap: wrap;
       gap: 12px;
       font-size: 11px;
       color: var(--muted);
@@ -533,16 +688,16 @@
       color: var(--accent-strong);
       text-decoration: none;
     }
-
     .footer-inner a:hover {
       text-decoration: underline;
     }
 
-    /* Mobile adjustments */
-    @media (max-width: 840px) {
+    /* RESPONSIVE */
+
+    @media (max-width: 880px) {
       .hero {
         grid-template-columns: minmax(0, 1fr);
-        margin-top: 24px;
+        margin-top: 26px;
       }
       .hero > :first-child {
         order: 1;
@@ -553,38 +708,59 @@
       .nav-links {
         display: none;
       }
-      .nav {
-        padding-inline: 16px;
+      iframe#voxelFrame {
+        height: 380px;
       }
-      .info {
+      .panels {
         grid-template-columns: minmax(0, 1fr);
       }
+      .panel ul {
+        columns: 1;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .nav {
+        padding-inline: 14px;
+      }
+      .hero {
+        padding-inline: 14px;
+      }
+      .panels {
+        padding-inline: 14px;
+      }
+      .status-strip {
+        padding-inline: 14px;
+      }
       iframe#voxelFrame {
-        height: 360px;
+        height: 330px;
       }
     }
   </style>
 </head>
 <body>
-  <div class="background-grid"></div>
-  <div class="orb a"></div>
-  <div class="orb b"></div>
-  <div class="orb c"></div>
+  <div class="bg-grid"></div>
+  <div class="bg-scanline"></div>
+  <div class="glow-orb a"></div>
+  <div class="glow-orb b"></div>
+  <div class="glow-orb c"></div>
+  <div class="starfield" id="starfield"></div>
 
   <header>
     <nav class="nav">
       <div class="nav-left">
-        <div class="logo-cube" aria-hidden="true">
-          <div class="logo-face front"></div>
-          <div class="logo-face back"></div>
-          <div class="logo-face left"></div>
-          <div class="logo-face right"></div>
-          <div class="logo-face top"></div>
-          <div class="logo-face bottom"></div>
+        <div class="logo-orbit" aria-hidden="true">
+          <div class="logo-ring"></div>
+          <div class="logo-cube">
+            <div class="logo-face front"></div>
+            <div class="logo-face back"></div>
+            <div class="logo-face left"></div>
+            <div class="logo-face right"></div>
+            <div class="logo-face top"></div>
+            <div class="logo-face bottom"></div>
+          </div>
         </div>
-        <div class="brand">
-          VOXEL<span>·31</span>
-        </div>
+        <div class="brand">VOXEL<span>·31</span> OBSERVATORY</div>
       </div>
       <div class="nav-links">
         <a href="#play">Play</a>
@@ -593,10 +769,10 @@
       </div>
       <div class="nav-cta">
         <button class="btn" type="button" onclick="toggleFullscreen()">
-          <span>Fullscreen</span>
+          Fullscreen
         </button>
         <a class="btn btn-primary" href="#play">
-          <span>Launch World</span>
+          Launch world
         </a>
       </div>
     </nav>
@@ -606,29 +782,31 @@
     <section class="hero" id="play">
       <div>
         <div class="eyebrow">
-          <span class="eyebrow-badge"></span>
-          LIVE WEBGL WORLD · v0.31
+          <div class="eyebrow-dot"></div>
+          Local WebGL world · v0.31
         </div>
         <h1>
-          Drop into an <span class="gradient-text">infinite voxel realm</span>.
+          Enter a <span class="gradient-text">neon‑lit voxel frontier</span>.
         </h1>
         <p>
-          Step out of flat pages and into a fully interactive, Minecraft‑style
-          sandbox running directly in your browser. No installs, no launchers —
-          just instant exploration.
+          Spin up a miniature, Minecraft‑style sandbox directly in your browser.
+          No launchers, no accounts — just blocks, sky, and as much curiosity as
+          you can bring.
         </p>
         <div class="hero-actions">
           <a class="btn btn-primary" href="#play">
-            Play now
+            Click into the world to start
           </a>
           <button class="btn" type="button" onclick="scrollToSection('controls')">
             View controls
           </button>
         </div>
         <div class="hero-meta">
-          <span>⛏ WASD · Mouse · Scroll · E · F · ESC</span>
-          <span class="meta-dot"></span>
-          <span>Built with a custom WebGL voxel engine</span>
+          <div class="hero-meta-chip">
+            <span class="chip-dot"></span>
+            <span>WASD · Mouse · Scroll · E · F · ESC</span>
+          </div>
+          <span>Inventory, crafting, creative and survival‑style play.</span>
         </div>
       </div>
 
@@ -640,116 +818,127 @@
             <div class="window-dot green"></div>
           </div>
           <div class="window-title">voxel_31.html · live session</div>
-          <div class="fps-indicator">
-            <span class="fps-dot"></span>
+          <div class="session-pill">
+            <span class="session-dot"></span>
             <span id="fpsLabel">60 fps</span>
           </div>
         </div>
         <div class="game-shell-body">
-          <!-- IMPORTANT: put voxel_31.html in the same folder as this file -->
+          <!-- Put voxel_31.html in same folder -->
           <iframe
             id="voxelFrame"
             src="voxel_31.html"
             title="Voxel World"
             allowfullscreen
           ></iframe>
-          <div class="game-placeholder-overlay">
+          <div class="hud-overlay">
+            <div class="hud-line"></div>
+            <div class="hud-circle"></div>
+            <div class="hud-text">CLICK · CAPTURE MOUSE · ESC TO RELEASE</div>
+          </div>
+          <div class="game-hint">
             Click inside the world, then use WASD + Mouse to move
           </div>
         </div>
       </div>
     </section>
 
-    <div class="status-bar">
+    <section class="status-strip">
       <div class="status-pill">
-        <div class="dot"></div>
-        <span><strong>Local</strong> file · hosted entirely in your browser</span>
+        <div class="status-dot"></div>
+        <span><strong>Local</strong> world · runs entirely in your browser</span>
       </div>
       <div class="status-pill">
-        <span>💾 Save via in‑game menu (if enabled in this build)</span>
+        <span>💾 Use the in‑game pause menu to save (if enabled in this build)</span>
       </div>
       <div class="status-pill">
-        <span>Tip: Press ESC inside the world to pause</span>
+        <span>Tip: Press ESC inside the world to pause and release the mouse</span>
       </div>
-    </div>
+    </section>
 
-    <section class="info" id="about">
-      <div class="card">
-        <h2>About</h2>
-        <h3>VOXEL · A tiny browser‑born sandbox</h3>
+    <section class="panels" id="about">
+      <article class="panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-kicker">About the world</div>
+            <div class="panel-title">A tiny voxel sandbox running in a single file</div>
+          </div>
+          <div class="panel-tag">Client‑side · WebGL</div>
+        </div>
         <p>
-          This world runs on a lightweight voxel engine designed to mimic the
-          feel of classic block builders directly inside the browser. Terrain,
-          blocks, inventory, crafting, and more are handled entirely on the
-          client.
+          VOXEL·31 is a compact, Minecraft‑style engine that lives entirely inside
+          an HTML document. It boots up a full 3D world, handles terrain, blocks,
+          inventory, crafting, and furnaces, and renders everything via WebGL in
+          your browser. [file:1]
+        </p>
+        <p>
+          Because it is just HTML + JavaScript, you can host it on any static
+          site service, drop it into your own portfolio, or even ship it on a USB
+          stick as a portable playground. [file:1]
         </p>
         <ul>
-          <li>Instant loading from a single HTML file.</li>
-          <li>WebGL‑powered 3D rendering with mouse‑look camera.</li>
-          <li>Breaking and placing blocks in real time.</li>
-          <li>Inventory, crafting, and furnace interfaces.</li>
-          <li>Support for creative and survival‑style play modes.</li>
+          <li>Instant load from a single <code>voxel_31.html</code> file. [file:1]</li>
+          <li>WASD movement with mouse‑look camera. [file:1]</li>
+          <li>Breaking and placing blocks in real time. [file:1]</li>
+          <li>Inventory, crafting, and creative inventory panels. [file:1]</li>
+          <li>Furnace interface with input, fuel, and output. [file:1]</li>
         </ul>
-      </div>
+      </article>
 
-      <div class="card" id="controls">
-        <h2>Controls</h2>
-        <h3>Master the world in seconds</h3>
+      <article class="panel" id="controls">
+        <div class="panel-header">
+          <div>
+            <div class="panel-kicker">Controls</div>
+            <div class="panel-title">Keybinds exposed by the in‑game UI</div>
+          </div>
+          <div class="panel-tag">Learn in seconds</div>
+        </div>
         <p>
-          These are the core bindings exposed by the in‑game UI, so you can jump
-          straight into mining and building without guessing the keys.
+          These bindings match what the UI inside the voxel world advertises, so
+          you can immediately move, build, and manage your inventory without
+          trial and error. [file:1]
         </p>
-        <div class="keybind-grid">
+        <div class="key-grid">
           <div class="keybind">
-            <span>W · A · S · D</span>
-            <span>Move</span>
+            <span>W · A · S · D</span><span>Move</span>
           </div>
           <div class="keybind">
-            <span>Mouse</span>
-            <span>Look around</span>
+            <span>Mouse</span><span>Look around</span>
           </div>
           <div class="keybind">
-            <span>Scroll / 1‑9</span>
-            <span>Hotbar</span>
+            <span>Scroll / 1‑9</span><span>Select hotbar slot</span>
           </div>
           <div class="keybind">
-            <span>Left click</span>
-            <span>Break block</span>
+            <span>Left click</span><span>Break block</span>
           </div>
           <div class="keybind">
-            <span>Right click</span>
-            <span>Place / use</span>
+            <span>Right click</span><span>Place / use block</span>
           </div>
           <div class="keybind">
-            <span>E</span>
-            <span>Inventory</span>
+            <span>E</span><span>Open inventory / crafting</span>
           </div>
           <div class="keybind">
-            <span>F</span>
-            <span>Fly / furnace</span>
+            <span>F</span><span>Toggle fly / open furnace</span>
           </div>
           <div class="keybind">
-            <span>C</span>
-            <span>Creative mode</span>
+            <span>C</span><span>Creative mode toggle</span>
           </div>
           <div class="keybind">
-            <span>ESC</span>
-            <span>Pause</span>
+            <span>ESC</span><span>Pause / close UI</span>
           </div>
           <div class="keybind">
-            <span>Space (in water)</span>
-            <span>Swim up</span>
+            <span>Space (in water)</span><span>Swim up</span>
           </div>
         </div>
-      </div>
+      </article>
     </section>
   </main>
 
   <footer>
     <div class="footer-inner">
-      <div>VOXEL·31 — local sandbox world</div>
+      <div>VOXEL·31 — local sandbox world · HTML + WebGL. [file:1]</div>
       <div>
-        Hosted as a static HTML page.
+        Drop <code>index.html</code> + <code>voxel_31.html</code> on any static host to share. [file:1]
       </div>
     </div>
   </footer>
@@ -772,7 +961,7 @@
       }
     }
 
-    // Lightweight fake FPS pulse for vibes
+    // Fake FPS pulse
     const fpsLabel = document.getElementById("fpsLabel");
     let t = 0;
     function animateFps() {
@@ -784,6 +973,23 @@
       requestAnimationFrame(animateFps);
     }
     animateFps();
+
+    // Tiny starfield generator
+    function seedStars() {
+      const container = document.getElementById("starfield");
+      if (!container) return;
+      const count = 80;
+      for (let i = 0; i < count; i++) {
+        const star = document.createElement("div");
+        star.className = "star";
+        star.style.left = Math.random() * 100 + "%";
+        star.style.top = Math.random() * 100 + "%";
+        star.style.animationDelay = (Math.random() * 4).toFixed(2) + "s";
+        star.style.opacity = (0.25 + Math.random() * 0.75).toFixed(2);
+        container.appendChild(star);
+      }
+    }
+    seedStars();
   </script>
 </body>
 </html>
