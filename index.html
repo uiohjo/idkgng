@@ -1,75 +1,881 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>The Holy Grail of Unblocked Games – Archive</title>
+  <title>The Holy Grail of Unblocked Games – Official Archive</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="The definitive archive and lore compendium for The Holy Grail of Unblocked Games (T.H.G.U.G.), including Legacy, Revive, and 2nd Coming eras.">
   <style>
-    body { font-family: sans-serif; max-width: 900px; margin: 0 auto; padding: 1.5rem; background: #0b0b10; color: #f5f5f5; }
-    h1, h2, h3 { color: #ffd85a; }
-    a { color: #7ad0ff; }
-    nav a { margin-right: 1rem; }
-    section { margin-bottom: 2rem; }
+    :root {
+      --bg: #050509;
+      --bg-alt: #0d0d16;
+      --fg: #f5f5ff;
+      --muted: #b0b0d0;
+      --accent: #ffd85a;
+      --accent-soft: rgba(255, 216, 90, 0.12);
+      --link: #7ad0ff;
+      --danger: #ff6b81;
+      --success: #7cffc7;
+      --border: #202036;
+      --code-bg: #11111e;
+      --shadow: 0 0 24px rgba(0, 0, 0, 0.7);
+      --radius-lg: 14px;
+      --radius-md: 9px;
+      --radius-sm: 6px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #17172a 0, #050509 55%, #000 100%);
+      color: var(--fg);
+      line-height: 1.6;
+    }
+
+    a {
+      color: var(--link);
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+
+    header.hero {
+      position: relative;
+      padding: 2.75rem 1.5rem 2rem;
+      text-align: center;
+      background: radial-gradient(circle at top, #232350 0, #050509 70%);
+      box-shadow: var(--shadow);
+      border-bottom: 1px solid var(--border);
+      z-index: 10;
+    }
+
+    .hero-title {
+      font-size: clamp(2.2rem, 4vw, 3rem);
+      margin: 0.3rem 0 0.6rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .hero-subtitle {
+      margin: 0.4rem 0 1.2rem;
+      color: var(--muted);
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+      font-size: 0.98rem;
+    }
+
+    .grail-seal {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 0.2rem 0.85rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 216, 90, 0.6);
+      background: linear-gradient(120deg, rgba(255, 216, 90, 0.15), rgba(122, 208, 255, 0.1));
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--accent);
+    }
+
+    .grail-seal span.badge-dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 12px rgba(255, 216, 90, 0.9);
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.75rem 1.5rem;
+      margin-top: 0.75rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .hero-meta span {
+      opacity: 0.9;
+    }
+
+    nav.main-nav {
+      margin-top: 1.6rem;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      font-size: 0.87rem;
+    }
+    nav.main-nav a {
+      padding: 0.45rem 0.9rem;
+      border-radius: 999px;
+      border: 1px solid rgba(112, 114, 166, 0.6);
+      background: rgba(5, 5, 15, 0.4);
+      backdrop-filter: blur(6px);
+    }
+    nav.main-nav a:hover {
+      border-color: var(--accent);
+      background: rgba(20, 20, 40, 0.9);
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1.5rem 1.25rem 3rem;
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 1.1fr);
+      gap: 1.5rem;
+    }
+    @media (max-width: 900px) {
+      main {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    section.card {
+      background: linear-gradient(145deg, rgba(11, 11, 22, 0.9), rgba(3, 3, 8, 0.96));
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(49, 49, 86, 0.9);
+      padding: 1.25rem 1.4rem 1.35rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    section.card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top left, rgba(255, 216, 90, 0.08), transparent 55%);
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+
+    .card h2 {
+      margin-top: 0;
+      margin-bottom: 0.35rem;
+      font-size: 1.22rem;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+    .card h3 {
+      margin-top: 0.85rem;
+      margin-bottom: 0.3rem;
+      font-size: 1.02rem;
+    }
+
+    .card-meta {
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+      margin-bottom: 0.7rem;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin: 0.5rem 0 0.9rem;
+      font-size: 0.78rem;
+    }
+
+    .pill {
+      padding: 0.15rem 0.6rem;
+      border-radius: 999px;
+      border: 1px solid rgba(85, 86, 150, 0.8);
+      background: rgba(5, 5, 15, 0.6);
+      color: var(--muted);
+    }
+
+    .pill--era {
+      border-color: rgba(255, 216, 90, 0.8);
+      color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .pill--status-live {
+      border-color: rgba(124, 255, 199, 0.9);
+      color: var(--success);
+      background: rgba(124, 255, 199, 0.08);
+    }
+
+    .pill--status-lost {
+      border-color: rgba(255, 107, 129, 0.8);
+      color: var(--danger);
+      background: rgba(255, 107, 129, 0.08);
+    }
+
+    .inline-note {
+      font-size: 0.82rem;
+      color: var(--muted);
+      border-left: 2px solid rgba(120, 120, 200, 0.7);
+      padding-left: 0.55rem;
+      margin: 0.4rem 0 0.65rem;
+    }
+
+    ul, ol {
+      padding-left: 1.2rem;
+      margin: 0.35rem 0 0.8rem;
+    }
+
+    code {
+      font-family: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      background: var(--code-bg);
+      border-radius: var(--radius-sm);
+      padding: 0.08rem 0.28rem;
+      font-size: 0.85em;
+    }
+
+    .era-timeline {
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(44, 44, 86, 0.9);
+      background: rgba(4, 4, 16, 0.9);
+      padding: 0.75rem 0.9rem;
+      margin: 0.45rem 0 0.75rem;
+      font-size: 0.84rem;
+    }
+
+    .era-entry {
+      display: grid;
+      grid-template-columns: 115px minmax(0, 1fr);
+      gap: 0.5rem 0.85rem;
+      padding: 0.3rem 0;
+      border-bottom: 1px dashed rgba(60, 60, 110, 0.7);
+    }
+    .era-entry:last-child {
+      border-bottom: none;
+    }
+    .era-entry-date {
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .era-entry-main {
+      color: var(--fg);
+    }
+
+    .era-tagline {
+      font-size: 0.84rem;
+      color: var(--muted);
+      font-style: italic;
+      margin-top: 0.3rem;
+    }
+
+    .table-wrap {
+      margin: 0.55rem 0 0.9rem;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      min-width: 500px;
+    }
+    th, td {
+      border: 1px solid rgba(60, 60, 118, 0.9);
+      padding: 0.45rem 0.55rem;
+      text-align: left;
+    }
+    th {
+      background: rgba(28, 28, 62, 0.95);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    tr:nth-child(even) td {
+      background: rgba(12, 12, 30, 0.95);
+    }
+
+    aside.sidebar {
+      position: sticky;
+      top: 1.25rem;
+      align-self: flex-start;
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+    @media (max-width: 900px) {
+      aside.sidebar {
+        position: static;
+      }
+    }
+
+    .sidebar-card {
+      background: radial-gradient(circle at top, rgba(255, 216, 90, 0.09), rgba(7, 7, 16, 0.98));
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(58, 58, 102, 0.95);
+      padding: 0.9rem 1rem;
+      box-shadow: var(--shadow);
+      font-size: 0.85rem;
+    }
+
+    .sidebar-card h3 {
+      margin-top: 0;
+      margin-bottom: 0.35rem;
+      font-size: 0.95rem;
+    }
+
+    .badge-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem;
+      margin-top: 0.35rem;
+    }
+    .badge {
+      padding: 0.18rem 0.48rem;
+      border-radius: 999px;
+      border: 1px solid rgba(95, 95, 165, 0.9);
+      font-size: 0.74rem;
+      color: var(--muted);
+    }
+
+    footer {
+      border-top: 1px solid rgba(36, 36, 72, 0.9);
+      padding: 1rem 1.5rem 1.9rem;
+      margin-top: 1rem;
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--muted);
+      background: radial-gradient(circle at bottom, rgba(255, 216, 90, 0.04), rgba(2, 2, 4, 0.98));
+    }
+
+    .foot-grid {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.75rem 1.8rem;
+    }
+
+    .status-led {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .status-led-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--success);
+      box-shadow: 0 0 10px rgba(124, 255, 199, 0.8);
+    }
+
+    .quote-block {
+      border-left: 3px solid rgba(255, 216, 90, 0.7);
+      padding-left: 0.6rem;
+      margin: 0.4rem 0 0.75rem;
+      font-size: 0.86rem;
+      color: #f8f5df;
+      font-style: italic;
+    }
+    .quote-block small {
+      display: block;
+      margin-top: 0.2rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-style: normal;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      gap: 0.75rem 1.1rem;
+    }
+    @media (max-width: 750px) {
+      .two-col {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .list-tag {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+      margin-bottom: 0.25rem;
+    }
+
+    .game-cat-list {
+      font-size: 0.85rem;
+    }
+    .game-cat-list li span.cat {
+      font-weight: 600;
+      color: var(--accent);
+    }
   </style>
 </head>
 <body>
-  <header>
-    <h1>The Holy Grail of Unblocked Games</h1>
-    <p>An unofficial archive of THGUG, THGUG Legacy, Revive, and 2nd Coming.</p>
-    <nav>
-      <a href="#timeline">Timeline</a>
-      <a href="#versions">Versions</a>
-      <a href="#lore">Lore &amp; Meta</a>
-      <a href="#behind">Behind the Scenes</a>
-      <a href="#testimonials">Testimonials</a>
-    </nav>
-  </header>
 
-  <section id="timeline">
-    <h2>Timeline</h2>
-    <ul>
-      <li>Oct 3rd, 2024 – First Version of THGUG documented.</li>
-      <li>Legacy Edition – Early major revision, later reconstructed.</li>
-      <li>Pre‑Takedown – Peak growth before major removal.</li>
-      <li>Revive – Resurrection after takedown.</li>
-      <li>2nd Coming (2C) – Reimagined and reconstructed era.</li>
-    </ul>
-  </section>
+<header class="hero" id="top">
+  <div class="grail-seal">
+    <span class="badge-dot" aria-hidden="true"></span>
+    <span>The Holy Grail of Unblocked Games</span>
+  </div>
+  <h1 class="hero-title">The Canonical THGUG Archive</h1>
+  <p class="hero-subtitle">
+    A maximalist chronicle of <strong>T.H.G.U.G.</strong> across its First Version, Legacy, Pre‑Takedown, Revive, and 2nd Coming eras – reconstructed from scattered docs, testbeds, and near‑wipes.
+  </p>
+  <div class="hero-meta">
+    <span>Curated by Giold Brinkser the 32nd</span>
+    <span>Primary author persona: Theo Grian</span>
+    <span>Project span: 2024 → 20XX</span>
+  </div>
+  <nav class="main-nav" aria-label="Primary navigation">
+    <a href="#overview">Overview</a>
+    <a href="#timeline">Timeline</a>
+    <a href="#versions">Versions</a>
+    <a href="#lore">Lore</a>
+    <a href="#gamelist">Game Index</a>
+    <a href="#behind">Behind the Scenes</a>
+    <a href="#testimonials">Testimonials</a>
+  </nav>
+</header>
 
-  <section id="versions">
-    <h2>Versions</h2>
-    <h3>First Version</h3>
-    <p>Short description here, based on your first‑version file.</p>
+<main>
 
-    <h3>Legacy Edition</h3>
-    <p>Explain what survived and what had to be reconstructed.</p>
+  <!-- MAIN CONTENT COLUMN -->
+  <div>
 
-    <h3>Pre‑Takedown</h3>
-    <p>Describe the big, fully loaded list of links and commentary.</p>
+    <!-- OVERVIEW -->
+    <section class="card" id="overview">
+      <div class="card-meta">Section · 01</div>
+      <h2>What Is T.H.G.U.G.?</h2>
 
-    <h3>Revive</h3>
-    <p>Talk about bringing THGUG back from deletion and rebuilding it.</p>
+      <p>
+        T.H.G.U.G. – “The Holy Grail of Unblocked Games” – started as a practical list of working school‑safe game links and mutated into a lore‑drenched, self‑aware scripture of the blocked‑internet era. <!-- summarize from your various THGUG docs -->
+      </p>
+      <p>
+        Every major revision – from the <strong>First Version</strong> to the apocalyptic <strong>2nd Coming</strong> – is both a tool (get to games fast) and a story (watch the archive fight back against deletion, filters, and entropy).
+      </p>
 
-    <h3>2nd Coming (2C)</h3>
-    <p>Explain how 2C is the mythic “return” of the project and how it was pieced together.</p>
-  </section>
+      <div class="pill-row">
+        <span class="pill pill--era">First Version · Oct 3rd, 2024</span>
+        <span class="pill pill--era">Legacy Edition</span>
+        <span class="pill pill--era">Pre‑Takedown</span>
+        <span class="pill pill--era">Revive</span>
+        <span class="pill pill--era">2nd Coming (2C)</span>
+      </div>
 
-  <section id="lore">
-    <h2>Lore &amp; Meta</h2>
-    <p>Summarize the “holy grail” jokes, the dramatic tone, and how changelogs became part of the story.</p>
-  </section>
+      <div class="inline-note">
+        This site does <em>not</em> host the actual game files; it documents the structures, eras, and intent behind each incarnation of THGUG, using surviving notes and reconstructions.[file:1][file:2][file:3][file:4][file:5][file:6][file:8][file:22]
+      </div>
 
-  <section id="behind">
-    <h2>Behind the Scenes</h2>
-    <p>Describe Theo Grian as creator, the struggle with filters, and the reconstruction work.</p>
-  </section>
+      <div class="two-col">
+        <div>
+          <div class="list-tag">Design pillars</div>
+          <ul>
+            <li>Be a reliable index of unblocked games, with context and status.</li>
+            <li>Turn update logs and breakages into lore instead of pure frustration.</li>
+            <li>Preserve every era, even through reconstructions and gaps.</li>
+          </ul>
+        </div>
+        <div>
+          <div class="list-tag">Primary sources</div>
+          <ul>
+            <li><code>The-Holy-Grail-of-Unblocked-Game-Files-First-Version-...</code>[file:8]</li>
+            <li><code>T.H.G.U.G.-Legacy-Edition-Reconstructed</code>[file:4]</li>
+            <li><code>The-Holy-Grail-of-Unblocked-Games-PreTakedown</code>[file:1][file:22]</li>
+            <li><code>T.H.G.U.G.-revive</code>[file:3]</li>
+            <li><code>THGUG-2C-TESTING-Reconstructed-...</code>[file:5]</li>
+            <li><code>The-Holy-Grail-of-Unblocked-Games-2nd-Coming-Reconstructed</code>[file:2]</li>
+          </ul>
+        </div>
+      </div>
+    </section>
 
-  <section id="testimonials">
-    <h2>Testimonials</h2>
-    <p>Add selected quotes from the Testimonials file here.</p>
-  </section>
+    <!-- TIMELINE -->
+    <section class="card" id="timeline">
+      <div class="card-meta">Section · 02</div>
+      <h2>Canonical Timeline</h2>
+      <p>
+        The history of THGUG is defined by creation, expansion, annihilation, and reconstruction. Below is the “official” era ordering, merging all surviving timestamps and author notes from the docs.[file:1][file:2][file:3][file:4][file:5][file:6][file:8][file:22]
+      </p>
 
-  <footer>
-    <p>Preserved and documented by Giold Brinkser the 32nd.</p>
-  </footer>
+      <div class="era-timeline">
+        <div class="era-entry">
+          <div class="era-entry-date">3 Oct 2024</div>
+          <div class="era-entry-main">
+            <strong>First Version created.</strong> A lean, almost utilitarian compilation of unblocked game links with early hints of personality and reverence for preservation.[file:8]
+            <div class="era-tagline">“If it’s blocked, it does not belong in the Grail.”</div>
+          </div>
+        </div>
+
+        <div class="era-entry">
+          <div class="era-entry-date">Late 2024</div>
+          <div class="era-entry-main">
+            <strong>Legacy Edition takes shape.</strong> A more stylized state of the document emerges, later known only through the <em>Legacy Edition Reconstructed</em> file after partial loss.[file:4]
+            <div class="era-tagline">Retrospective canonization of an otherwise ephemeral text.</div>
+          </div>
+        </div>
+
+        <div class="era-entry">
+          <div class="era-entry-date">Pre‑Takedown</div>
+          <div class="era-entry-main">
+            <strong>Peak expansion &amp; looming doom.</strong> The “PreTakedown” doc shows THGUG at maximal density, right before a major wipe or blocking event.[file:1][file:22]
+            <div class="era-tagline">“We expanded until the system noticed.”</div>
+          </div>
+        </div>
+
+        <div class="era-entry">
+          <div class="era-entry-date">Post‑Takedown</div>
+          <div class="era-entry-main">
+            <strong>Revive.</strong> The <code>T.H.G.U.G.-revive</code> file chronicles a resurrection: lost sections are hunted down, patched in, or memorialized.[file:3]
+            <div class="era-tagline">The Grail does not disappear; it respawns.</div>
+          </div>
+        </div>
+
+        <div class="era-entry">
+          <div class="era-entry-date">2C Era</div>
+          <div class="era-entry-main">
+            <strong>2nd Coming (2C) &amp; experimental testing.</strong> The project comes back with self‑aware religious framing, experimental layouts, and heavy reconstruction from scattered sources.[file:2][file:5]
+            <div class="era-tagline">“This time we know the apocalypse is coming in advance.”</div>
+          </div>
+        </div>
+      </div>
+
+      <p class="inline-note">
+        Precise calendar dates inside the docs may be inconsistent; this timeline prefers narrative coherence over strict forensic accuracy, matching the tone of the project itself.[file:1][file:2][file:3][file:4][file:5][file:6][file:8][file:22]
+      </p>
+    </section>
+
+    <!-- VERSIONS -->
+    <section class="card" id="versions">
+      <div class="card-meta">Section · 03</div>
+      <h2>Version‑by‑Version Deep Dive</h2>
+
+      <h3>1. First Version (circa Oct 3rd, 2024)</h3>
+      <div class="pill-row">
+        <span class="pill pill--era">Era: Genesis</span>
+        <span class="pill pill--status-live">Status: Partially preserved</span>
+        <span class="pill">Source: First‑Version file</span>
+      </div>
+      <p>
+        The First Version is the seed: a reasonably short Markdown‑style document of working unblocked games, with concise notes by Theo Grian, little meta, and minimal theatrics.[file:8]
+      </p>
+      <ul>
+        <li>Primary goal: provide working links, fast, with minimal clutter.[file:8]</li>
+        <li>Secondary goal: set the “Grail” branding – that games here must be worthy (that is, actually unblocked).[file:8]</li>
+        <li>Document features simple headings and list formatting, without the later reconstruction or apocalypse language.[file:8]</li>
+      </ul>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Aspect</th>
+              <th>First Version</th>
+              <th>Later Eras</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Primary role</td>
+              <td>Functional game list with light commentary.[file:8]</td>
+              <td>Mythic chronicle plus game index.[file:1][file:2][file:3][file:4][file:5]</td>
+            </tr>
+            <tr>
+              <td>Styling</td>
+              <td>Plain lists, basic sections.[file:8]</td>
+              <td>Named eras, lore asides, reconstruction labels.[file:1][file:3][file:4][file:5]</td>
+            </tr>
+            <tr>
+              <td>Self‑awareness</td>
+              <td>Low – mostly practical.[file:8]</td>
+              <td>High – constantly comments on its own existence.[file:1][file:2][file:3][file:4][file:5]</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>2. Legacy Edition (Reconstructed)</h3>
+      <div class="pill-row">
+        <span class="pill pill--era">Era: Early Cult Text</span>
+        <span class="pill pill--status-lost">Status: Reconstructed from fragments</span>
+        <span class="pill">Source: Legacy‑Edition‑Reconstructed</span>
+      </div>
+      <p>
+        The Legacy Edition exists primarily as a reconstruction, curated after the original “live” doc was altered or lost; it canonizes an earlier state of THGUG by rebuilding it from memory and partial copies.[file:4]
+      </p>
+      <ul>
+        <li>Introduces more dramatic section names and increased commentary around specific links and categories.[file:4]</li>
+        <li>Uses “Legacy” language to imply that even by the time of reconstruction this era already felt ancient within the project.[file:4]</li>
+        <li>Shows early hints of the “if it was here once, it deserves a grave marker” mentality.[file:4]</li>
+      </ul>
+      <p class="inline-note">
+        Whenever a precise link or blurb could not be recovered, the Legacy file often leaves markers or summary descriptions, making the reconstruction itself part of the story.[file:4]
+      </p>
+
+      <h3>3. Pre‑Takedown</h3>
+      <div class="pill-row">
+        <span class="pill pill--era">Era: Golden Age</span>
+        <span class="pill pill--status-lost">Status: Survives as “PreTakedown” snapshot</span>
+        <span class="pill">Source: PreTakedown doc</span>
+      </div>
+      <p>
+        The Pre‑Takedown era is THGUG at maximum mass: sprawling lists, cross‑references, and layered commentary, right before some external force (school filters, deletion, or admin action) interrupts the party.[file:1][file:22]
+      </p>
+      <ul>
+        <li>Contains dense blocks of game entries, often grouped and annotated with working/blocked notes.[file:1]</li>
+        <li>Begins to talk about its own potential death, anticipating that something might wipe or break access.[file:1]</li>
+        <li>Serves as the major baseline for later “Revive” and “2nd Coming” attempts, which use it as a reference point.[file:1][file:3][file:5]</li>
+      </ul>
+
+      <h3>4. Revive</h3>
+      <div class="pill-row">
+        <span class="pill pill--era">Era: Resurrection</span>
+        <span class="pill pill--status-live">Status: Live but patched</span>
+        <span class="pill">Source: T.H.G.U.G.-revive</span>
+      </div>
+      <p>
+        After a wipe or loss event, Revive appears as a determined attempt to drag as much of THGUG back into existence as possible, acknowledging gaps and failures openly in the text.[file:3]
+      </p>
+      <ul>
+        <li>Frequently notes where sections were “probably here” but cannot be fully reconstructed, turning absence into explicit narrative.[file:3]</li>
+        <li>Blends practical link‑repair with meta‑reflection on how fragile the project actually is.[file:3]</li>
+        <li>Sets up the logic that will later justify a full <em>2nd Coming</em> rather than a simple incremental update.[file:3][file:6]</li>
+      </ul>
+
+      <h3>5. 2nd Coming (2C) &amp; Testing</h3>
+      <div class="pill-row">
+        <span class="pill pill--era">Era: Apocalyptic Canon</span>
+        <span class="pill pill--status-live">Status: Reconstructed &amp; experimental</span>
+        <span class="pill">Sources: 2nd‑Coming‑Reconstructed, 2C‑Testing</span>
+      </div>
+      <p>
+        The 2nd Coming re‑frames the entire project as scripture that has already survived one end of the world and expects another, using heavier lore, more structured sections, and test layouts captured in separate docs.[file:2][file:5]
+      </p>
+      <ul>
+        <li><code>THGUG-2C-TESTING-Reconstructed-from-various-sources</code> shows alternate formats, new categorization experiments, and half‑implemented systems for game indexing.[file:5]</li>
+        <li><code>The-Holy-Grail-of-Unblocked-Games-2nd-Coming-Reconstructed</code> stitches together a “final” 2C narrative out of those experiments and backups.[file:2]</li>
+        <li>The language leans into explicit “second coming” and end‑times themes, turning practical update notes into prophecy‑style proclamations.[file:2][file:5]</li>
+      </ul>
+
+      <p class="inline-note">
+        If you want to host specific version texts, you can create subpages like <code>/first-version.html</code>, <code>/legacy.html</code>, and so on, each embedding curated excerpts from the matching doc.[file:1][file:2][file:3][file:4][file:5][file:6][file:8][file:22]
+      </p>
+    </section>
+
+    <!-- LORE -->
+    <section class="card" id="lore">
+      <div class="card-meta">Section · 04</div>
+      <h2>Lore, Myth, and Running Jokes</h2>
+
+      <p>
+        THGUG’s lore turns everyday tech failures into sacred events. Filters become inquisitions, wiped docs become apocalypses, and new links arrive as prophesied miracles.
+      </p>
+
+      <h3>The “Holy Grail” metaphor</h3>
+      <ul>
+        <li>The Grail is not just a collection; it is the last cup of unblocked fun in an otherwise filtered desert.</li>
+        <li>To be in the Grail is a kind of canonization – broken or blocked links often get “memorialized” instead of silently deleted.[file:1][file:3][file:4]</li>
+        <li>Each era treats its own version as temporarily final, while warning that nothing survives untouched.[file:1][file:2][file:3]</li>
+      </ul>
+
+      <h3>Theosophy: The Theo Grian Persona</h3>
+      <p>
+        Theo Grian appears in the documents both as real editor and as a semi‑fictional prophet of the Grail, narrating the rise and fall of versions with increasingly dramatic flair.[file:1][file:3][file:4][file:6]
+      </p>
+      <ul>
+        <li>Speaks as “I” when talking about hunting for links or dealing with blocks, grounding the text in lived student experience.[file:1][file:3]</li>
+        <li>Switches into more prophetic tones (“2nd Coming”, “revive”) when addressing the project as if it were a deity or legendary artifact.[file:2][file:3][file:6]</li>
+        <li>Obsessed with not letting earlier states vanish, leading to multiple reconstructed editions and notes about what’s missing.[file:2][file:3][file:4][file:5]</li>
+      </ul>
+
+      <h3>Reconstruction as Canon</h3>
+      <p>
+        In most projects, reconstruction is a desperate backup; here, it is part of the official story. Each “Reconstructed” file freely admits its gaps but still claims canonical status for how things are remembered.[file:2][file:4][file:5]
+      </p>
+      <ul>
+        <li>Loss events are referenced openly, with text describing vanished sections instead of pretending they never existed.[file:3][file:4]</li>
+        <li>Testing docs and drafts – especially in the 2C era – are preserved as legitimate chapters of the canon.[file:5]</li>
+        <li>This creates a meta‑lore: not just “which links worked” but “which links the archive itself could not keep.”[file:2][file:3][file:4][file:5]</li>
+      </ul>
+
+      <div class="quote-block">
+        “If a game link falls in a classroom and no one archived it, did it ever truly load?”
+        <small>– Attributed to late‑Revive Theo, paraphrased from recurring commentary.[file:3]</small>
+      </div>
+    </section>
+
+    <!-- GAME INDEX (ABSTRACT, NOT THE ACTUAL LIST) -->
+    <section class="card" id="gamelist">
+      <div class="card-meta">Section · 05</div>
+      <h2>How the Game Index Works</h2>
+
+      <p>
+        The real THGUG game lists live inside the versioned documents, but the structure of how games are categorized and described is part of the design. This section explains that structure so even if links rot, the blueprint remains.[file:1][file:3][file:5][file:8]
+      </p>
+
+      <div class="two-col">
+        <div>
+          <div class="list-tag">Typical categories</div>
+          <ul class="game-cat-list">
+            <li><span class="cat">Action / Platformer</span> – Skill, reflexes, or movement‑heavy games.</li>
+            <li><span class="cat">Puzzle / Logic</span> – Brain teasers, physics games, and pattern‑based challenges.</li>
+            <li><span class="cat">Arcade / Classics</span> – Simple, replayable score‑chasers or retro‑style games.</li>
+            <li><span class="cat">Multiplayer / Social</span> – Games that are better with others in the same room.</li>
+            <li><span class="cat">“Homework‑safe”</span> – Games disguised as utilities, tools, or educational sites.</li>
+          </ul>
+        </div>
+        <div>
+          <div class="list-tag">Per‑game notes</div>
+          <ul>
+            <li><strong>Name</strong> – Title used in the document, sometimes with alternate nicknames.</li>
+            <li><strong>Link</strong> – URL or path to the host; may have multiple mirrors when one is blocked.[file:1][file:3]</li>
+            <li><strong>Status</strong> – Working / Partially blocked / Dead, often with short justification.[file:1][file:3][file:5]</li>
+            <li><strong>Commentary</strong> – Micro‑reviews, jokes, or notes about which classmates played it.[file:1][file:3][file:8]</li>
+          </ul>
+        </div>
+      </div>
+
+      <p class="inline-note">
+        To keep this archive legal and host‑friendly, the public site should include <em>descriptions and structure</em>, not direct embeds of third‑party games. Use your private copies of the docs for raw URLs.[file:1][file:3][file:5][file:8]
+      </p>
+
+      <h3>Example “Virtual Entry”</h3>
+      <p>
+        This is a fake but structurally accurate example of how an entry might look inside a THGUG era:
+      </p>
+      <ul>
+        <li><strong>Title:</strong> <code>Grail Runner</code></li>
+        <li><strong>Era presence:</strong> First Version, Legacy, Pre‑Takedown.</li>
+        <li><strong>Status notes:</strong> “Still works on lab PCs as of Pre‑Takedown; blocked on Chromebooks, use mirror #2.”</li>
+        <li><strong>Lore line:</strong> “The game everyone swore was ‘mid’ until it got banned.”</li>
+      </ul>
+    </section>
+
+    <!-- BEHIND THE SCENES -->
+    <section class="card" id="behind">
+      <div class="card-meta">Section · 06</div>
+      <h2>Behind the Scenes &amp; Process</h2>
+
+      <h3>Creation workflow</h3>
+      <ul>
+        <li>New links were found during school or free time, tested for blocking, then added to a working doc with quick notes.[file:1][file:8]</li>
+        <li>When a doc became too chaotic, a new “edition” or era would be spun up, sometimes copying over only the best or most stable entries.[file:1][file:3][file:4]</li>
+        <li>Takedowns, overwrites, or accidental deletions triggered reconstruction phases using partial copies, screenshots, and memory.[file:2][file:3][file:4][file:5]</li>
+      </ul>
+
+      <h3>Tools &amp; environments</h3>
+      <ul>
+        <li>Primary medium: online documents (like Google Docs/Drive) that could be updated from school devices.[file:1][file:2][file:3][file:4][file:5][file:6][file:8][file:22]</li>
+        <li>Secondary storage: exported Markdown or text copies, used later during reconstruction.[file:2][file:3][file:4][file:5][file:8]</li>
+        <li>Social feedback: testimonials, casual commentary from classmates, and reactions embedded into later edits.[file:7]</li>
+      </ul>
+
+      <h3>Why reconstruction became a feature</h3>
+      <p>
+        Instead of hiding missing content, THGUG normalizes it: broken links, lost sections, and corrupted docs are named, described, and occasionally dramatized, reinforcing the sense that the archive is fighting entropy in real time.[file:2][file:3][file:4][file:5]
+      </p>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section class="card" id="testimonials">
+      <div class="card-meta">Section · 07</div>
+      <h2>Voices from the Grail</h2>
+
+      <p>
+        A separate responses file titled <code>T.H.G.U.G.-Testimonials-Responses</code> collects feedback and reactions from people who used or encountered THGUG.[file:7]
+      </p>
+      <p class="inline-note">
+        Due to its format, that file is best opened directly in your Drive; from there you can copy lines into this section. Below are placeholder structures you can fill.
+      </p>
+
+      <div class="quote-block">
+        “[INSERT SHORT REAL QUOTE ABOUT HOW THGUG SAVED SOMEONE’S STUDY HALL OR MADE A CLASS LESS BORING.]”
+        <small>– [Anonymous classmate], from Testimonials file</small>
+      </div>
+
+      <div class="quote-block">
+        “[INSERT QUOTE ABOUT A SPECIFIC GAME OR ERA, LIKE ‘PRE‑TAKEDOWN WAS PEAK.’]”
+        <small>– [User handle or ‘Anonymous’]</small>
+      </div>
+
+      <h3>How to add more testimonials</h3>
+      <ul>
+        <li>Open the testimonials/response doc in Drive and skim for short, punchy lines that represent different viewpoints.[file:7]</li>
+        <li>Paste them as quotes here, removing any real names if you want to keep the archive pseudonymous.</li>
+        <li>Optionally group them by era (First Version, Revive, 2C) to show how reactions changed over time.</li>
+      </ul>
+    </section>
+
+  </div>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+
+    <div class="sidebar-card">
+      <h3>Quick Era Selector</h3>
+      <p style="margin-bottom:0.4rem;">Jump to the part of the canon you care about most:</p>
+      <ul style="padding-left:1.1rem; margin:0.2rem 0 0.55rem;">
+        <li><a href="#versions">First Version &amp; Legacy</a></li>
+        <li><a href="#versions">Pre‑Takedown</a></li>
+        <li><a href="#versions">Revive</a></li>
+        <li><a href="#versions">2nd Coming (2C)</a></li>
+      </ul>
+      <div class="badge-list">
+        <span class="badge">Genesis</span>
+        <span class="badge">Golden Age</span>
+        <span class="badge">Resurrection</span>
+        <span class="badge">Apocalypse</span>
+      </div>
+    </div>
+
+    <div class="sidebar-card">
+      <h3>Author &amp; Curator</h3>
+      <p style="margin-bottom:0.35rem;">
+        Primary author persona: <strong>Theo Grian</strong> – in‑universe prophet, out‑of‑universe student who kept pushing the Grail forward despite wipes and filters.[file:1][file:3][file:4][file:6]
+      </p>
+      <p style="margin-bottom:0.35rem;">
+        Archive curator: <strong>Giold Brinkser the 32nd</strong> – responsible for preserving, reconstructing, and now web‑publishing the canon.
+      </p>
+      <div class="badge-list">
+        <span class="badge">Doc archaeologist</span>
+        <span class="badge">Link mortician</span>
+        <span class="badge">Lore maintainer</span>
+      </div>
+    </div>
+
+    <div class="sidebar-card">
+      <h3>Using This Archive</h3>
+      <ul style="padding-left:1.1rem; margin:0.1rem 0 0.4rem;">
+        <li>Start at <a href="#overview">Overview</a> to understand the concept.</li>
+        <li>Visit <a href="#timeline">Timeline</a> for the big picture of eras.</li>
+        <li>Dive into <a href="#versions">Versions</a> if you care about details.</li>
+        <li>Check <a href="#gamelist">Game Index</a> for the structural blueprint.</li>
+      </ul>
+      <p class="inline-note" style="margin-bottom:0;">
+        For raw, link‑heavy docs, use your private Drive versions. This site is the story <em>about</em> those docs.[file:1][file:2][file:3][file:4][file:5][file:6][file:8][file:22]
+      </p>
+    </div>
+
+  </aside>
+
+</main>
+
+<footer>
+  <div class="foot-grid">
+    <div class="status-led">
+      <span class="status-led-dot"></span>
+      <span>Archive operational · versions mirrored in local storage</span>
+    </div>
+    <div>
+      Created from reconstructed documents spanning First Version through 2nd Coming.
+    </div>
+    <div>
+      Maintained by Giold Brinkser the 32nd · In honor of every blocked lab PC.
+    </div>
+  </div>
+</footer>
+
 </body>
 </html>
