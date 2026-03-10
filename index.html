@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Voxel Realms | WebGL World</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #020617;
+      --bg-alt: #020b22;
+      --accent: #22d3ee;
+      --accent-soft: rgba(34, 211, 238, 0.2);
+      --accent-strong: #38bdf8;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --card: rgba(15, 23, 42, 0.85);
+      --border: rgba(148, 163, 184, 0.35);
+      --danger: #f97373;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #0f172a 0, #020617 40%, #000 100%);
+      color: var(--text);
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Animated background grid */
+    .background-grid {
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(148, 163, 184, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(148, 163, 184, 0.08) 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: 0.35;
+      transform: translateZ(0);
+      animation: gridPan 30s linear infinite;
+      pointer-events: none;
+      z-index: -2;
+    }
+
+    @keyframes gridPan {
+      from { transform: translate3d(0, 0, 0); }
+      to   { transform: translate3d(-80px, -80px, 0); }
+    }
+
+    /* Neon blur orbs */
+    .orb {
+      position: fixed;
+      width: 420px;
+      height: 420px;
+      border-radius: 999px;
+      filter: blur(110px);
+      opacity: 0.35;
+      pointer-events: none;
+      z-index: -3;
+    }
+    .orb.a { background: #22d3ee; top: -80px; left: -40px; }
+    .orb.b { background: #6366f1; bottom: -120px; right: -60px; }
+    .orb.c { background: #f97316; top: 40%; right: 20%; }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(18px);
+      background: linear-gradient(
+        to bottom,
+        rgba(15, 23, 42, 0.9),
+        rgba(15, 23, 42, 0.6),
+        transparent
+      );
+      border-bottom: 1px solid rgba(148, 163, 184, 0.35);
+    }
+
+    .nav {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-cube {
+      width: 26px;
+      height: 26px;
+      position: relative;
+      transform: rotate3d(1, 1, 0, 28deg);
+      transform-style: preserve-3d;
+      animation: cubeSpin 9s linear infinite;
+    }
+    .logo-face {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+      opacity: 0.95;
+      border-radius: 4px;
+      box-shadow: 0 0 20px rgba(34, 211, 238, 0.7);
+    }
+    .logo-face.front { transform: translateZ(13px); }
+    .logo-face.back  { transform: translateZ(-13px) rotateY(180deg); }
+    .logo-face.left  { transform: rotateY(-90deg) translateZ(13px); }
+    .logo-face.right { transform: rotateY(90deg) translateZ(13px); }
+    .logo-face.top   { transform: rotateX(90deg) translateZ(13px); }
+    .logo-face.bottom{ transform: rotateX(-90deg) translateZ(13px); }
+
+    @keyframes cubeSpin {
+      from { transform: rotate3d(1, 1, 0, 0deg); }
+      to   { transform: rotate3d(1, 1, 0, 360deg); }
+    }
+
+    .brand {
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .brand span {
+      color: var(--accent-strong);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 18px;
+      font-size: 14px;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      position: relative;
+      padding-bottom: 4px;
+    }
+
+    .nav-links a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0;
+      height: 2px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), #6366f1);
+      transition: width 0.18s ease-out;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .nav-cta {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .btn {
+      border: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.7);
+      color: var(--text);
+      font-size: 13px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.16s ease-out, background 0.16s ease-out, transform 0.08s ease-out, box-shadow 0.16s ease-out;
+    }
+
+    .btn-primary {
+      border-color: var(--accent-strong);
+      background: linear-gradient(135deg, #22d3ee, #0ea5e9);
+      color: #0f172a;
+      box-shadow: 0 14px 35px rgba(34, 211, 238, 0.3);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.6);
+      border-color: var(--accent-strong);
+      background: radial-gradient(circle at top left, var(--accent-soft), rgba(15, 23, 42, 0.9));
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #38bdf8, #22d3ee);
+      box-shadow: 0 18px 40px rgba(56, 189, 248, 0.4);
+    }
+
+    main {
+      flex: 1;
+    }
+
+    .hero {
+      max-width: 1100px;
+      margin: 40px auto 26px;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr);
+      gap: 32px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+      margin-bottom: 16px;
+      gap: 8px;
+    }
+    .eyebrow-badge {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: radial-gradient(circle at center, #22c55e, #15803d);
+      box-shadow: 0 0 12px rgba(34, 197, 94, 0.9);
+    }
+
+    h1 {
+      font-size: clamp(2.4rem, 4vw, 3.4rem);
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+      margin-bottom: 14px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(120deg, #22d3ee, #a855f7, #f97316);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.6;
+      max-width: 32rem;
+      margin-bottom: 20px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .meta-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent-strong);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.9);
+    }
+
+    /* Game card */
+    .game-shell {
+      position: relative;
+      border-radius: 18px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.18), rgba(15, 23, 42, 0.96));
+      overflow: hidden;
+      box-shadow:
+        0 20px 60px rgba(15, 23, 42, 0.9),
+        0 0 0 1px rgba(15, 23, 42, 0.9);
+    }
+
+    .game-shell-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: linear-gradient(to right, rgba(15, 23, 42, 0.92), rgba(15, 23, 42, 0.8));
+      border-bottom: 1px solid rgba(148, 163, 184, 0.35);
+    }
+
+    .window-dots {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .window-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: #4b5563;
+    }
+    .window-dot.red { background: #f97373; }
+    .window-dot.amber { background: #fbbf24; }
+    .window-dot.green { background: #22c55e; }
+
+    .window-title {
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .fps-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: #bbf7d0;
+      background: rgba(22, 163, 74, 0.16);
+      border-radius: 999px;
+      padding: 3px 8px;
+      border: 1px solid rgba(22, 163, 74, 0.6);
+    }
+
+    .fps-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.9);
+    }
+
+    .game-shell-body {
+      position: relative;
+      background: radial-gradient(circle at top, rgba(15, 118, 110, 0.4), rgba(15, 23, 42, 0.95));
+    }
+
+    .game-placeholder-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: rgba(226, 232, 240, 0.4);
+    }
+
+    iframe#voxelFrame {
+      width: 100%;
+      height: clamp(360px, 56vh, 520px);
+      border: none;
+      display: block;
+      background: #020617;
+    }
+
+    /* Status bar */
+    .status-bar {
+      max-width: 1100px;
+      margin: 0 auto 28px;
+      padding: 0 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.88);
+    }
+
+    .status-pill strong {
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--accent-strong);
+    }
+
+    /* Info section */
+    .info {
+      max-width: 1100px;
+      margin: 0 auto 40px;
+      padding: 0 20px 10px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      gap: 22px;
+    }
+
+    .card {
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      padding: 16px 18px;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.95);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: -60%;
+      background: radial-gradient(circle at top, rgba(56, 189, 248, 0.12), transparent 60%);
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .card h2 {
+      font-size: 15px;
+      margin-bottom: 6px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .card h3 {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+
+    .card ul {
+      list-style: none;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .card li {
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card li::before {
+      content: "◆";
+      font-size: 8px;
+      color: var(--accent-strong);
+    }
+
+    .keybind-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .keybind {
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      padding: 8px 10px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.12), rgba(15, 23, 42, 0.95));
+    }
+
+    .keybind span:first-child {
+      font-family: "SF Mono", ui-monospace, Menlo, Monaco, Consolas, monospace;
+      color: var(--text);
+    }
+
+    footer {
+      border-top: 1px solid rgba(148, 163, 184, 0.35);
+      margin-top: auto;
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.9), #020617);
+    }
+
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 12px 20px 18px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .footer-inner a {
+      color: var(--accent-strong);
+      text-decoration: none;
+    }
+
+    .footer-inner a:hover {
+      text-decoration: underline;
+    }
+
+    /* Mobile adjustments */
+    @media (max-width: 840px) {
+      .hero {
+        grid-template-columns: minmax(0, 1fr);
+        margin-top: 24px;
+      }
+      .hero > :first-child {
+        order: 1;
+      }
+      .hero > :last-child {
+        order: 2;
+      }
+      .nav-links {
+        display: none;
+      }
+      .nav {
+        padding-inline: 16px;
+      }
+      .info {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      iframe#voxelFrame {
+        height: 360px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="background-grid"></div>
+  <div class="orb a"></div>
+  <div class="orb b"></div>
+  <div class="orb c"></div>
+
+  <header>
+    <nav class="nav">
+      <div class="nav-left">
+        <div class="logo-cube" aria-hidden="true">
+          <div class="logo-face front"></div>
+          <div class="logo-face back"></div>
+          <div class="logo-face left"></div>
+          <div class="logo-face right"></div>
+          <div class="logo-face top"></div>
+          <div class="logo-face bottom"></div>
+        </div>
+        <div class="brand">
+          VOXEL<span>·31</span>
+        </div>
+      </div>
+      <div class="nav-links">
+        <a href="#play">Play</a>
+        <a href="#about">World</a>
+        <a href="#controls">Controls</a>
+      </div>
+      <div class="nav-cta">
+        <button class="btn" type="button" onclick="toggleFullscreen()">
+          <span>Fullscreen</span>
+        </button>
+        <a class="btn btn-primary" href="#play">
+          <span>Launch World</span>
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="play">
+      <div>
+        <div class="eyebrow">
+          <span class="eyebrow-badge"></span>
+          LIVE WEBGL WORLD · v0.31
+        </div>
+        <h1>
+          Drop into an <span class="gradient-text">infinite voxel realm</span>.
+        </h1>
+        <p>
+          Step out of flat pages and into a fully interactive, Minecraft‑style
+          sandbox running directly in your browser. No installs, no launchers —
+          just instant exploration.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#play">
+            Play now
+          </a>
+          <button class="btn" type="button" onclick="scrollToSection('controls')">
+            View controls
+          </button>
+        </div>
+        <div class="hero-meta">
+          <span>⛏ WASD · Mouse · Scroll · E · F · ESC</span>
+          <span class="meta-dot"></span>
+          <span>Built with a custom WebGL voxel engine</span>
+        </div>
+      </div>
+
+      <div class="game-shell">
+        <div class="game-shell-header">
+          <div class="window-dots">
+            <div class="window-dot red"></div>
+            <div class="window-dot amber"></div>
+            <div class="window-dot green"></div>
+          </div>
+          <div class="window-title">voxel_31.html · live session</div>
+          <div class="fps-indicator">
+            <span class="fps-dot"></span>
+            <span id="fpsLabel">60 fps</span>
+          </div>
+        </div>
+        <div class="game-shell-body">
+          <!-- IMPORTANT: put voxel_31.html in the same folder as this file -->
+          <iframe
+            id="voxelFrame"
+            src="voxel_31.html"
+            title="Voxel World"
+            allowfullscreen
+          ></iframe>
+          <div class="game-placeholder-overlay">
+            Click inside the world, then use WASD + Mouse to move
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="status-bar">
+      <div class="status-pill">
+        <div class="dot"></div>
+        <span><strong>Local</strong> file · hosted entirely in your browser</span>
+      </div>
+      <div class="status-pill">
+        <span>💾 Save via in‑game menu (if enabled in this build)</span>
+      </div>
+      <div class="status-pill">
+        <span>Tip: Press ESC inside the world to pause</span>
+      </div>
+    </div>
+
+    <section class="info" id="about">
+      <div class="card">
+        <h2>About</h2>
+        <h3>VOXEL · A tiny browser‑born sandbox</h3>
+        <p>
+          This world runs on a lightweight voxel engine designed to mimic the
+          feel of classic block builders directly inside the browser. Terrain,
+          blocks, inventory, crafting, and more are handled entirely on the
+          client.
+        </p>
+        <ul>
+          <li>Instant loading from a single HTML file.</li>
+          <li>WebGL‑powered 3D rendering with mouse‑look camera.</li>
+          <li>Breaking and placing blocks in real time.</li>
+          <li>Inventory, crafting, and furnace interfaces.</li>
+          <li>Support for creative and survival‑style play modes.</li>
+        </ul>
+      </div>
+
+      <div class="card" id="controls">
+        <h2>Controls</h2>
+        <h3>Master the world in seconds</h3>
+        <p>
+          These are the core bindings exposed by the in‑game UI, so you can jump
+          straight into mining and building without guessing the keys.
+        </p>
+        <div class="keybind-grid">
+          <div class="keybind">
+            <span>W · A · S · D</span>
+            <span>Move</span>
+          </div>
+          <div class="keybind">
+            <span>Mouse</span>
+            <span>Look around</span>
+          </div>
+          <div class="keybind">
+            <span>Scroll / 1‑9</span>
+            <span>Hotbar</span>
+          </div>
+          <div class="keybind">
+            <span>Left click</span>
+            <span>Break block</span>
+          </div>
+          <div class="keybind">
+            <span>Right click</span>
+            <span>Place / use</span>
+          </div>
+          <div class="keybind">
+            <span>E</span>
+            <span>Inventory</span>
+          </div>
+          <div class="keybind">
+            <span>F</span>
+            <span>Fly / furnace</span>
+          </div>
+          <div class="keybind">
+            <span>C</span>
+            <span>Creative mode</span>
+          </div>
+          <div class="keybind">
+            <span>ESC</span>
+            <span>Pause</span>
+          </div>
+          <div class="keybind">
+            <span>Space (in water)</span>
+            <span>Swim up</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div>VOXEL·31 — local sandbox world</div>
+      <div>
+        Hosted as a static HTML page.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function scrollToSection(id) {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function toggleFullscreen() {
+      const iframe = document.getElementById("voxelFrame");
+      if (!iframe) return;
+      if (iframe.requestFullscreen) {
+        iframe.requestFullscreen();
+      } else if (iframe.webkitRequestFullscreen) {
+        iframe.webkitRequestFullscreen();
+      } else if (iframe.msRequestFullscreen) {
+        iframe.msRequestFullscreen();
+      }
+    }
+
+    // Lightweight fake FPS pulse for vibes
+    const fpsLabel = document.getElementById("fpsLabel");
+    let t = 0;
+    function animateFps() {
+      t += 0.04;
+      const base = 58 + Math.sin(t) * 4;
+      if (fpsLabel) {
+        fpsLabel.textContent = base.toFixed(0) + " fps";
+      }
+      requestAnimationFrame(animateFps);
+    }
+    animateFps();
+  </script>
+</body>
+</html>
